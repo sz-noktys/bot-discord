@@ -20,7 +20,7 @@ client.on('messageCreate', async (message) => {
     await message.channel.sendTyping();
 
 const response = await axios.post(
-  "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct",
+  "https://api-inference.huggingface.co/models/google/flan-t5-large"
   {
     inputs: prompt,
     parameters: {
