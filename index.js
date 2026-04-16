@@ -19,24 +19,36 @@ client.on('messageCreate', async (message) => {
   try {
     await message.channel.sendTyping();
 
-    const response = await axios.post(
-      "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct",
-      {
-        inputs: prompt
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.HF_TOKEN}`
-        }
-      }
-    );
+const response = await axios.post(
+  "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct",
+  {
+    inputs: prompt,
+    parameters: {
+      max_new_tokens: 200
+    }
+  },
+  {
+    headers: {
+      Authorization: `Bearer ${process.env.HF_TOKEN}`
+    }
+  }
+);
 
-    const text = response.data[0]?.generated_text || "Pas de réponse";
+// SAFE CHECK
+let text = "Pas de réponse";
 
-    message.reply(text);
+if (Array.isArray(response.data) && response.data[0]?.generated_text) {
+  text = response.data[0].generated_text;
+} else if (response.data?.generated_text) {
+  text = response.data.generated_text;
+} else {
+  text = "⚠️ IA occupée, réessaie dans quelques secondes";
+}
+
+message.reply(text);
 
   } catch (err) {
-    console.log(err.response?.data || err);
+    console.log("ERREUR IA :", err.response?.data || err.message);
     message.reply("❌ Erreur IA");
   }
 });
