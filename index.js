@@ -20,33 +20,25 @@ client.on('messageCreate', async (message) => {
     await message.channel.sendTyping();
 
 const response = await axios.post(
-  "https://api-inference.huggingface.co/models/google/flan-t5-large",
+  "https://openrouter.ai/api/v1/chat/completions",
   {
-    inputs: prompt,
-    parameters: {
-      max_new_tokens: 200
-    }
+    model: "mistralai/mistral-7b-instruct",
+    messages: [
+      { role: "user", content: prompt }
+    ]
   },
   {
     headers: {
-      Authorization: `Bearer ${process.env.HF_TOKEN}`,
+      Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
       "Content-Type": "application/json"
     }
   }
 );
 
-// SAFE CHECK
-let text = "Pas de réponse";
-
-if (Array.isArray(response.data) && response.data[0]?.generated_text) {
-  text = response.data[0].generated_text;
-} else if (response.data?.generated_text) {
-  text = response.data.generated_text;
-} else {
-  text = "⚠️ IA occupée, réessaie dans quelques secondes";
-}
-
+const text = response.data.choices[0].message.content;
 message.reply(text);
+
+
 
   } catch (err) {
     console.log("ERREUR COMPLETE :", err.response?.data || err.message);
