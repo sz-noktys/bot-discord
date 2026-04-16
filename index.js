@@ -20,7 +20,7 @@ client.on('messageCreate', async (message) => {
     await message.channel.sendTyping();
 
 const response = await axios.post(
-  "https://api-inference.huggingface.co/models/google/flan-t5-large"
+  "https://api-inference.huggingface.co/models/google/flan-t5-large",
   {
     inputs: prompt,
     parameters: {
@@ -29,7 +29,8 @@ const response = await axios.post(
   },
   {
     headers: {
-      Authorization: `Bearer ${process.env.HF_TOKEN}`
+      Authorization: `Bearer ${process.env.HF_TOKEN}`,
+      "Content-Type": "application/json"
     }
   }
 );
