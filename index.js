@@ -49,8 +49,8 @@ if (Array.isArray(response.data) && response.data[0]?.generated_text) {
 message.reply(text);
 
   } catch (err) {
-    console.log("ERREUR IA :", err.response?.data || err.message);
-    message.reply("❌ Erreur IA");
+    console.log("ERREUR COMPLETE :", err.response?.data || err.message);
+    message.reply("❌ " + (err.response?.data?.error || "Erreur IA"));
   }
 });
 
